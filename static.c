@@ -1,93 +1,99 @@
 #include <stdio.h>
-#define MAX_TRAINS 5
-struct Train
-{
-    int trainNo;
-    char name[30];
-    int availableSeats;
-};
-struct Train trains[MAX_TRAINS] =
-{
-    {101, "Godavari Express", 20},
-    {102, "Vande Bharat", 15},
-    {103, "Konark Express", 25},
-    {104, "Chennai Express", 10},
-    {105, "Duronto Express", 18}
-};
-int trainCount = 5;
-int countTrains()
-{
-    return trainCount;
-}
-
-int totalAvailableSeats()
+#include "railway.h"
+void predictDemand(void)
 {
     int i;
-    int total = 0;
-
+    int j;
+    int booked;
+    int waiting;
+    int expectedDemand;
+    double bookingPercentage;
+    if (trainCount == 0)
+    {
+        printf("\nNo trains available for demand prediction.\n");
+        return;
+    }
+    printf("\n========== DEMAND PREDICTION ==========\n");
     for (i = 0; i < trainCount; i++)
     {
-        total = total + trains[i].availableSeats;
-    }
-    return total;
-}
-float averageSeats()
-{
-    int total;
-    total = totalAvailableSeats();
-    if (trainCount == 0)
-        return 0;
-    return (float)total / trainCount;
-}
-void displayStatistics()
-{
-    int total;
-    total = totalAvailableSeats();
-    printf("\n===== Railway Statistics =====\n");
-    printf("Total Trains: %d\n", countTrains());
-    printf("Total Available Seats: %d\n", total);
-    printf("Average Available Seats: %.2f\n", averageSeats());
-}
-int main()
-{
-    int choice;
-    while (1)
-    {
-        printf("\n===== MEMBER 4 =====\n");
-        printf("1. Display Statistics\n");
-        printf("2. Total Trains\n");
-        printf("3. Total Available Seats\n");
-        printf("4. Average Available Seats\n");
-        printf("5. Exit\n");
-        printf("Enter choice: ");
-        scanf("%d", &choice);
-        if (choice == 1)
+        booked = trains[i].totalSeats -
+      trains[i].availableSeats;
+        waiting = 0;
+        for (j = 0; j < waitingCount; j++)
         {
-            displayStatistics();
+            if (waitingList[j].trainNo == trains[i].no)
+            {
+                waiting++;
+            }
         }
-        else if (choice == 2)
+        expectedDemand = booked + waiting;
+        if (trains[i].totalSeats >0)
         {
-            printf("Total Trains: %d\n", countTrains());
-        }
-        else if (choice == 3)
-        {
-            printf("Total Available Seats: %d\n",
-                   totalAvailableSeats());
-        }
-        else if (choice == 4)
-        {
-            printf("Average Available Seats: %.2f\n",
-                   averageSeats());
-        }
-        else if (choice == 5)
-        {
-            printf("Program ended.\n");
-            break;
+            bookingPercentage =
+                ((double)booked / trains[i].totalSeats) * 100.0;
         }
         else
         {
-            printf("Invalid choice.\n");
+            bookingPercentage = 0.0;
+        }
+
+        printf("\nTrain %d - %s\n",
+               trains[i].no,
+               trains[i].name);
+        printf("Total Seats        : %d\n", trains[i].totalSeats);
+        printf("Booked Seats       : %d\n", booked);
+        printf("Available Seats    : %d\n", trains[i].availableSeats);
+        printf("Waiting Passengers : %d\n",  waiting);
+        printf("Booking Percentage : %.2f%%\n", bookingPercentage);
+        printf("Expected Demand    : %d\n", expectedDemand);
+        if (bookingPercentage >= 80.0 || waiting >= 5)
+        {
+            printf("Demand Level       : HIGH\n");
+        }
+        else if (bookingPercentage >= 50.0 || waiting >= 2)
+        {
+            printf("Demand Level       : MEDIUM\n");
+        }
+        else
+        {
+            printf("Demand Level       : LOW\n");
         }
     }
-    return 0;
+}
+void showStatistics(void)
+{
+    int i;
+    int totalSeats = 0;
+    int availableSeats = 0;
+    int bookedSeats = 0;
+    int totalWaiting = 0;
+    double occupancyPercentage = 0.0;
+    for (i = 0; i < trainCount; i++)
+    {
+        totalSeats += trains[i].totalSeats;
+        availableSeats += trains[i].availableSeats;
+    }
+    bookedSeats = totalSeats - availableSeats;
+    totalWaiting = waitingCount;
+    if (totalSeats > 0)
+    {
+        occupancyPercentage =
+            ((double)bookedSeats / totalSeats) * 100.0;
+    }
+    printf("\n========== SYSTEM STATISTICS ==========\n");
+    printf("Total Trains          : %d\n",
+           trainCount);
+    printf("Total Passengers      : %d\n",
+           passengerCount);
+    printf("Confirmed Tickets     : %d\n",
+           ticketCount);
+    printf("Waiting Passengers    : %d\n",
+           totalWaiting);
+    printf("Total Seats           : %d\n",
+           totalSeats);
+    printf("Booked Seats          : %d\n",
+           bookedSeats);
+    printf("Available Seats       : %d\n",
+           availableSeats);
+    printf("Seat Occupancy        : %.2f%%\n", occupancyPercentage);    printf("=======================================\n");
 }
