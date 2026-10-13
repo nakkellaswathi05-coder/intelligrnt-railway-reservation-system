@@ -1,5 +1,5 @@
 # Member 4 - Statistics
-**File:** `statistics.c`
+**File:** `static.c`
 ## My Contribution
 I worked on the Statistics part of the
 Intelligent Railway Reservation System.
@@ -14,7 +14,5 @@ I implemented:
 The main functions in my module are:
 
 ```text
-countTrains()
-totalAvailableSeats()
-averageSeats()
-displayStatistics()
+predictDemand(void)
+showStatistics(void)
