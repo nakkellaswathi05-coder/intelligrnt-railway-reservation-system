@@ -1,4 +1,4 @@
-Team Assignment
+Team Assignment :
 Member 1
 File: member1_core.c
 Structures
